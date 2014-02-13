@@ -68,19 +68,26 @@ def p_action(p):
     """
     action : position
     action : sheriff
-    action : CHECK DIGIT
-    action : NOMINATE DIGIT
-    action : CANCEL DIGIT
+    action : CHECK player_comma_list
+    action : NOMINATE player_comma_list
+    action : CANCEL player_comma_list
     action : CANCEL DOLLAR
     action : DENOMINATE DIGIT
     action : SHOT DIGIT
-    action : DO_NOT_VOTE DIGIT
+    action : DO_NOT_VOTE player_comma_list
     action : OPEN_BRACE brace_action CLOSE_BRACE
     """
     if len(p) == 2:
         p[0] = p[1]
     elif len(p) == 3:
-        p[0] = (p[1].lower(), p[2])
+        if p[1].lower() in (PlayerSpeech.CHECK, PlayerSpeech.CANCEL,
+                PlayerSpeech.NOMINATE, PlayerSpeech.DO_NOT_VOTE):
+            if p[2] == PlayerSpeech.SHERIFF:
+                p[0] = [(PlayerSpeech.SHERIFF, (0, PlayerSpeech.CANCEL))]
+            else:
+                p[0] = [(p[1].lower(), num) for num in p[2]]
+        else:
+            p[0] = (p[1].lower(), p[2])
     else:
         p[0] = p[2]
 
@@ -156,7 +163,7 @@ def p_brace_action(p):
         if isinstance(p[2], list):
             p[0] = [(PlayerSpeech.SHERIFF, (0, p[2]))]
         else:
-            p[0] = [(PlayerSpeech.CANCEL, p[1])]
+            p[0] = [(PlayerSpeech.SHERIFF, (0, PlayerSpeech.CANCEL))]
     elif len(p) == 4:
         if p[1] == PlayerSpeech.SHERIFF and p[2] == '?':
             p[0] = p[3]
@@ -168,7 +175,7 @@ def p_brace_action(p):
             p[0] = [(PlayerSpeech.DO_NOT_VOTE, (p[2], p[3]))]
     else:
         if p[4] == '|':
-            p[0] = [(PlayerSpeech.INFORMATION, (p[6], p[3]))]
+            p[0] = [(PlayerSpeech.INFORMATION, (p[5], p[3]))]
         else:
             decision = int("{0}{1}".format(p[3],p[4]))
             p[0] = [(PlayerSpeech.SET, (p[1], decision))]
@@ -195,7 +202,12 @@ yacc.yacc()
 
 
 def parse(speech):
-    processed = re.sub(r'(^| )\$([\+-]+)($| )', '\g<1>($\g<2>)\g<3>', speech)
+    sheriff_dont_say_checks = re.compile('(^| )\$([-\+]+)($| )')
+    processed = speech
+    while sheriff_dont_say_checks.search(processed):
+        processed = sheriff_dont_say_checks.sub('\g<1>($\g<2>)\g<3>',
+                                                processed)
     processed = re.sub(r'(^| )\$x($| )', '\g<1>($x)\g<2>', processed)
+    processed = re.sub(r'(^| )\z($| )', '\g<1>z0\g<2>', processed)
     return yacc.parse(processed)
 
