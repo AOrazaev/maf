@@ -99,12 +99,22 @@ class SpeechParserTest(unittest.TestCase):
     def test_who_is_sherif_parsing(self):
         speech = "($? (4:x) (5:-1,3)) $x ($x) x$"
         self.assertEqual(parse(speech),
-            [(PlayerSpeech.SHERIFF, (4, 'x')),
+            [(PlayerSpeech.SHERIFF, (4, PlayerSpeech.CANCEL)),
              (PlayerSpeech.SHERIFF, (5, [(PlayerSpeech.NOT_PLAY, 1),
                                          (PlayerSpeech.NOT_PLAY, 3)])),
-             (PlayerSpeech.SHERIFF, (0, 'x')),
-             (PlayerSpeech.SHERIFF, (0, 'x')),
-             (PlayerSpeech.SHERIFF, (0, 'x'))]
+             (PlayerSpeech.SHERIFF, (0, PlayerSpeech.CANCEL)),
+             (PlayerSpeech.SHERIFF, (0, PlayerSpeech.CANCEL)),
+             (PlayerSpeech.SHERIFF, (0, PlayerSpeech.CANCEL))]
+        )
+
+    def test_doc_example_speech(self):
+        speech = '+1,3 -7 n4 n7x7 (z?7) (z7 7) ($$ -7) z'
+        self.assertEqual(parse(speech),
+             [('+', 1), ('+', 3), ('-', 7),
+              ('n', 4), ('n', 7), ('x', 7),
+              ('z', (7, [7])),
+              ('i', (None, [('-', 7)])),
+              ('z', 0)]
         )
 
 
