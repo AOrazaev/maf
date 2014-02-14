@@ -49,7 +49,12 @@ def t_DIGIT(t):
     return t
 
 def t_error(t):
-    raise TypeError("Unknown text '%s'" % (t.value,))
+    from StringIO import StringIO
+    buf = StringIO()
+    print >> buf, "Unkonwn token. See information below.\n"
+    print >> buf, ' '*7, "PREPROCESSED INPUT:", yacc.current_parsed_string
+    print >> buf, ' '*7, "ERROR HERE:", '-'*(8 + t.lexpos) + '^'
+    raise SyntaxError(buf.getvalue())
 
 lex.lex()
 
@@ -197,6 +202,13 @@ def p_sheriff_in_list_position(p):
     """
     p[0] = (p[2], p[4].lower() if isinstance(p[4], str) else p[4])
 
+def p_error(p):
+    from StringIO import StringIO
+    buf = StringIO()
+    print >> buf, "Error while parsing string. See information below.\n"
+    print >> buf, ' '*7, "PREPROCESSED INPUT:", yacc.current_parsed_string
+    print >> buf, ' '*7, "ERROR HERE:", '-'*(8 + p.lexpos) + '^'
+    raise SyntaxError(buf.getvalue())
 
 yacc.yacc()
 
@@ -209,5 +221,9 @@ def parse(speech):
                                                 processed)
     processed = re.sub(r'(^| )\$x($| )', '\g<1>($x)\g<2>', processed)
     processed = re.sub(r'(^| )\z($| )', '\g<1>z0\g<2>', processed)
-    return yacc.parse(processed)
+
+    # FIXME: hack for human error handeling
+    yacc.current_parsed_string = processed
+
+    return yacc.parse(processed, tracking=True)
 
