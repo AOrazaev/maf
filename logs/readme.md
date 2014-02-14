@@ -87,31 +87,6 @@
         - both: 0 # никто не проголосовал за то, чтобы оба игрока покинули игру
 
 #### Как записывать голоса?
-Вот грамматика для голосов:
-
-    # terminals
-    DDOT = ':'
-    COMMA = ','
-    DIGIT = '\d+'
-    BOTH = 'both'
-    EMPTY = ''
-    DASH = '-'
-
-    # grammar rules
-    VOTE:
-        WHOS DDOT HANDS
-
-    WHOS:
-        DIGIT
-      | BOTH
-      | DIGIT COMMA WHOS
-
-    HANDS:
-        DIGIT
-      | EMPTY
-      | DIGIT DASH DIGIT
-      | DIGIT HANDS
-      | DIGIT COMMA HANDS
 
 Примеры:
 
