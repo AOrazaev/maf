@@ -1,23 +1,13 @@
 #!/usr/bin/env python
 
 import logging
+import game_actions as actions
+import speech_parser
+import votes_parser
 
 
 class PlayerSpeech(object):
     """Player speech container."""
-
-    PLAY = '+'
-    NOT_PLAY = '-'
-    SHERIFF = '$'
-    SHOT = '>'
-    NOMINATE = 'n'
-    DENOMINATE = 'd'
-    CANCEL = 'x'
-    DO_NOT_VOTE = 'z'
-    CHECK = 'c'
-    INFORMATION = 'i'
-    SET = 's'
-
     def __init__(self):
         self._actions = []
 

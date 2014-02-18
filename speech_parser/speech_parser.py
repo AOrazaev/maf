@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 
-from maf_game import PlayerSpeech
+import game_actions as actions
 
 from ply import lex
 from ply import yacc
@@ -85,10 +85,10 @@ def p_action(p):
     if len(p) == 2:
         p[0] = p[1]
     elif len(p) == 3:
-        if p[1].lower() in (PlayerSpeech.CHECK, PlayerSpeech.CANCEL,
-                PlayerSpeech.NOMINATE, PlayerSpeech.DO_NOT_VOTE):
-            if p[2] == PlayerSpeech.SHERIFF:
-                p[0] = [(PlayerSpeech.SHERIFF, (0, PlayerSpeech.CANCEL))]
+        if p[1].lower() in (actions.CHECK, actions.CANCEL,
+                actions.NOMINATE, actions.DO_NOT_VOTE):
+            if p[2] == actions.SHERIFF:
+                p[0] = [(actions.SHERIFF, (0, actions.CANCEL))]
             else:
                 p[0] = [(p[1].lower(), num) for num in p[2]]
         else:
@@ -166,24 +166,24 @@ def p_brace_action(p):
     """
     if len(p) == 3:
         if isinstance(p[2], list):
-            p[0] = [(PlayerSpeech.SHERIFF, (0, p[2]))]
+            p[0] = [(actions.SHERIFF, (0, p[2]))]
         else:
-            p[0] = [(PlayerSpeech.SHERIFF, (0, PlayerSpeech.CANCEL))]
+            p[0] = [(actions.SHERIFF, (0, actions.CANCEL))]
     elif len(p) == 4:
-        if p[1] == PlayerSpeech.SHERIFF and p[2] == '?':
+        if p[1] == actions.SHERIFF and p[2] == '?':
             p[0] = p[3]
-        elif p[2] == PlayerSpeech.SHERIFF:
-            p[0] = [(PlayerSpeech.INFORMATION, (None, p[3]))]
-        elif p[1] == PlayerSpeech.DO_NOT_VOTE and p[2] == '?':
+        elif p[2] == actions.SHERIFF:
+            p[0] = [(actions.INFORMATION, (None, p[3]))]
+        elif p[1] == actions.DO_NOT_VOTE and p[2] == '?':
             p[0] = [] # Do not record questions about voting
         else:
-            p[0] = [(PlayerSpeech.DO_NOT_VOTE, (p[2], p[3]))]
+            p[0] = [(actions.DO_NOT_VOTE, (p[2], p[3]))]
     else:
         if p[4] == '|':
-            p[0] = [(PlayerSpeech.INFORMATION, (p[5], p[3]))]
+            p[0] = [(actions.INFORMATION, (p[5], p[3]))]
         else:
             decision = int("{0}{1}".format(p[3],p[4]))
-            p[0] = [(PlayerSpeech.SET, (p[1], decision))]
+            p[0] = [(actions.SET, (p[1], decision))]
 
 
 def p_sheriff_list(p):
@@ -191,7 +191,7 @@ def p_sheriff_list(p):
     sheriff_list : sheriff_in_list_position
     sheriff_list : sheriff_in_list_position sheriff_list
     """
-    p[0] = [(PlayerSpeech.SHERIFF, p[1])]
+    p[0] = [(actions.SHERIFF, p[1])]
     if len(p) > 2:
         p[0].extend(p[2])
 
