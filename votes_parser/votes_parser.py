@@ -1,4 +1,10 @@
 #!/usr/bin/env python
+"""Module for parsing game votings.
+
+Example of parsing:
+>>> parse("1,2 7-10 4")
+[1, 2, 4, 7, 8, 9, 10]
+"""
 
 import re
 
@@ -22,3 +28,6 @@ def parse(votestr):
     votes.sort()
     return votes
 
+if __name__ == '__main__':
+    import doctest
+    doctest.testmod()
