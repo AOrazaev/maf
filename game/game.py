@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 
 import logging
-import game_actions as actions
+import actions as actions
 import util.collection as CU
 import util.string as SU
 import speech_parser

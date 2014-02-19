@@ -5,7 +5,7 @@ SET_PYTHONPATH := PYTHONPATH=$(PWD)
 test::
 	$(SET_PYTHONPATH) python speech_parser/speech_parser_test.py
 	$(SET_PYTHONPATH) python votes_parser/votes_parser.py
-	$(SET_PYTHONPATH) python maf_game.py
+	$(SET_PYTHONPATH) python game/game.py
 
 clean::
 	echo "Cleaning project"

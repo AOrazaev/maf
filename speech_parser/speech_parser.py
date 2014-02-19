@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 
-import game_actions as actions
+from game import actions
 
 from ply import lex
 from ply import yacc
