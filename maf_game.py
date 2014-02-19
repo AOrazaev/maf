@@ -2,8 +2,8 @@
 
 import logging
 import game_actions as actions
-import collection_utils as CU
-import string_utils as SU
+import util.collection as CU
+import util.string as SU
 import speech_parser
 import votes_parser
 
