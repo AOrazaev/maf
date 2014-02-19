@@ -11,3 +11,4 @@ clean::
 	echo "Cleaning project"
 	find . -name '*.pyc' -delete
 	find . -name 'parser.out' -delete
+	find . -name 'parsetab.py' -delete
