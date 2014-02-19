@@ -1,6 +1,13 @@
 SET_PYTHONPATH := PYTHONPATH=$(PWD)
 
-.PHONY: test
+.PHONY: test clean
+
 test::
 	$(SET_PYTHONPATH) python speech_parser/speech_parser_test.py
 	$(SET_PYTHONPATH) python votes_parser/votes_parser.py
+	$(SET_PYTHONPATH) python maf_game.py
+
+clean::
+	echo "Cleaning project"
+	find . -name '*.pyc' -delete
+	find . -name 'parser.out' -delete
