@@ -41,7 +41,7 @@
         - votes:
           - 4: 6-10
           - 9: 1-5
-          both: 0
+          - both: 0
       night:
         shot: 2
         don: 7
