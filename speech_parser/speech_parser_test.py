@@ -86,6 +86,11 @@ class SpeechParserTest(unittest.TestCase):
              (actions.SHERIFF, (0, [(actions.NOT_PLAY, 1),
                                          (actions.NOT_PLAY, 2)]))]
         )
+        speech = 'n9 ($ +6)'
+        self.assertEqual(parse(speech),
+            [(actions.NOMINATE, 9),
+             (actions.SHERIFF, (0, [(actions.PLAY, 6)]))]
+        )
 
     def test_information_parsing(self):
         speech = "($$ -1,2) ($$ +2 +3 | 1)"
