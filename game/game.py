@@ -1,9 +1,10 @@
 #!/usr/bin/env python
+# -*- coding: utf-8 -*-
 
 import logging
 import actions as actions
 import util.collection as CU
-import util.string as SU
+import util.strings as SU
 import speech_parser
 import votes_parser
 
@@ -244,10 +245,37 @@ class MafGame(object):
     def date(self):
         return self._date
 
-    @classmethod
-    def fromYamlDict(game):
+    @property
+    def club(self):
+        return self._club
+
+    @property
+    def locality(self):
+        return self._locality
+
+    @staticmethod
+    def from_yaml(game):
         """:returns: MafGame object created from parsed yaml game dict."""
-        pass
+        logging.debug("Parsing: {0}".format(game))
+        logging.debug("Keys: {0}".format(game.keys()))
+        for k, v in game.items():
+            logging.debug("Key-val: {0} -> {1}".format(repr(k), repr(v)))
+
+        mg = MafGame()
+        mg._locality = game.get('locality', None)
+        logging.info("Game locality: {0}".format(mg.locality))
+        mg._date = game.get('date')
+        logging.info("Game date: {0}".format(mg.date))
+        mg._club = game.get('club')
+        logging.info("Game club: {0}".format(mg.club))
+        mg._players = game.get('players', [])
+        logging.info("Game players: {0}".format(CU.strlist(mg.players)))
+        mg._roles = game.get('roles', {})
+        logging.info("Game roles: {0}".format(mg.roles))
+
+        mg._laps = [GameLap.from_dict(lap) for lap in game['laps'][-1]]
+        mg._end = game.get('laps', [{'end': None}])[-1]['end']
+
 
 if __name__ == '__main__':
     import doctest

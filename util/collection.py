@@ -1,5 +1,6 @@
 #!/usr/bin/env python
-"""Helper functions for work with collections.
+# -*- coding: utf-8 -*-
+ur"""Helper functions for work with collections.
 
 Utils:
 
@@ -24,6 +25,16 @@ Utils:
     ...
     TypeError: Cannot undict dictionary: {'fruit_0': 'apple', 'fruit_1': 'banana'}
     Dictionary size is greater than 1.
+
+`strlist` -- convert list to readable string.
+    >>> print strlist([u'Строки', 'Юникод', 123])
+    [Строки, Юникод, 123]
+    >>> print strlist(['Строки'])
+    [Строки]
+
+    Feel difference:
+    >>> print ['Строки']
+    ['\xd0\xa1\xd1\x82\xd1\x80\xd0\xbe\xd0\xba\xd0\xb8']
 """
 
 
@@ -51,6 +62,26 @@ def undict(dictionary):
                         "Dictionary size is greater than 1.")
     return dictionary.items()[0] if len(dictionary) == 1 else None
 
+
+def strlist(li):
+    """:returns: str represintation of list. But elements are represented
+    by str(elem), insead of repr(elem).
+
+    Not [u'Строка'], but [Строка]
+    """
+    result = u'['
+    for num, elem in enumerate(li):
+        result += elem if isinstance(elem, str) or isinstance(elem, unicode) \
+                  else str(elem)
+        if num + 1 != len(li):
+            result += ', '
+    result += ']'
+    return result.encode('utf-8')
+
+
 if __name__ == '__main__':
+    import sys
+    reload(sys)
+    sys.setdefaultencoding('utf-8')
     import doctest
     doctest.testmod()
