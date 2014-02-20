@@ -50,8 +50,8 @@ class Voting(object):
 
     For constructing votings use `from_list` function:
         >>> v = [
-        ...   {'votes': [{3:'4-6'}, {6:'1 2,7'}, {7:'3 8 9'}, {'1,4,9': 0}]},
-        ...   {'crash': [{3:'-4,5,6 +8'}, {6:'z'}, {7:'z -6 >6'}]},
+        ...   {'votes': [{3:'4-6'}, {6:'1 2,7'}, {7:'3 8 9'}, {'1,4,9': 0}],
+        ...    'crash': [{3:'-4,5,6 +8'}, {6:'z'}, {7:'z -6 >6'}]},
         ...   {'votes': [{3:'1-10'}, {'6,7': 0}]}
         ... ]
         >>> vs = Voting.from_list(v)
@@ -103,23 +103,16 @@ class Voting(object):
         """:returns: constructed list of votes from given voting list."""
         votings = []
         for v in l:
-            cur = CU.undict(v)
-            if cur[0] == 'votes':
+            if 'votes' in v:
                 current = Voting()
-                current._votes = Voting._parse_votes(cur[1])
+                current._votes = Voting._parse_votes(v['votes'])
+                if 'crash' in v:
+                    current._crash = Voting._parse_crash(v['crash'])
                 votings.append(current)
-            elif cur[0] == 'crash':
-                if not votings:
-                    raise SyntaxError("Crash before voting! Crash: " + str(v))
-                votings[-1]._crash = Voting._parse_crash(cur[1])
-            elif cur[0] in range(1, 11):
+            else:
                 current = Voting()
                 current._votes = Voting._parse_votes(l)
                 return [current]
-            else:
-                raise SyntaxError("Unknown voting element: " +
-                        "{0}\n It should be ".format(v.keys()) +
-                        "'crash' or 'votes' or digit for short voting.")
         return votings
 
     def __repr__(self):
