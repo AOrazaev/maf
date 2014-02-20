@@ -25,13 +25,18 @@ class PlayerSpeech(object):
     @staticmethod
     def from_str(s):
         """Constructs PlayerSpeech from str."""
+        logging.debug("Parsing speech: {0}".format(s))
         if s is None:
             return PlayerSpeech()
         if s == 0:
             return PlayerSpeech()
 
+        if isinstance(s, int):
+            s = str(s) if s < 0 else '+' + str(s)
+
         ps = PlayerSpeech()
         ps._actions = speech_parser.parse(s)
+        logging.debug("Parsing speech result: {0}".format(ps.actions))
         return ps
 
     @property
@@ -190,12 +195,17 @@ class GameLap(object):
     @staticmethod
     def from_dict(d):
         """Constructs GameLap from dict"""
-        logging.info("Parsing day: {0}".format(d))
+        logging.debug("Parsing day: {0}".format(d.keys()))
         lap = GameLap()
         lap._speechs = GameLap._parse_speechs(d.get('day', []))
         lap._votings = Voting.from_list(d.get('voting', []))
         lap._night_actions = d.get('night', {})
-        lap._dead = d.get('dead', [])
+        lap._dead = []
+        for p_sp in d.get('dead', []):
+            logging.debug("Parsing dead: {0}".format(p_sp))
+            p, sp = CU.undict(p_sp)
+            lap._dead.append((p, PlayerSpeech.from_str(sp)))
+
         return lap
 
     @staticmethod
@@ -270,6 +280,8 @@ class MafGame(object):
 
         logging.info("Start parsing laps...")
         mg._laps = [GameLap.from_dict(lap) for lap in game['laps'][:-1]]
+
+        return mg
 
 
 if __name__ == '__main__':
