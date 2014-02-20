@@ -18,11 +18,12 @@ class SpeechParserTest(unittest.TestCase):
              (actions.PLAY, 4)]
         )
 
-        speech = "(3 4,5 6 | -3) (1 2|-1) (5,6|-2)"
+        speech = "(3 4,5 6 | -3) (1 2|-1) (5,6|-2) (1-5 | -2)"
         self.assertEqual(parse(speech),
             [(actions.SET, ([3, 4, 5, 6], -3)),
              (actions.SET, ([1, 2], -1)),
-             (actions.SET, ([5, 6], -2))]
+             (actions.SET, ([5, 6], -2)),
+             (actions.SET, ([1, 2, 3, 4, 5], -2))]
         )
 
     def test_check_parsing(self):

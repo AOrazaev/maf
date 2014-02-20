@@ -144,12 +144,20 @@ def p_player_comma_list(p):
 
 def p_player_list(p):
     """
+    player_list : player_range
+    player_list : player_range player_list
     player_list : player_comma_list
     player_list : player_comma_list player_list
     """
     p[0] = p[1]
     if len(p) > 2:
         p[0].extend(p[2])
+
+def p_player_range(p):
+    """
+    player_range : DIGIT MINUS DIGIT
+    """
+    p[0] = range(p[1], p[3] + 1)
 
 def p_brace_action(p):
     """
