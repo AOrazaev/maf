@@ -113,6 +113,9 @@ class SpeechParserTest(unittest.TestCase):
              (actions.SHERIFF, (0, actions.CANCEL))]
         )
 
+        alternative = "($? 4:(x) 5:(-1,3)) $x ($x) x$"
+        self.assertEqual(parse(alternative), parse(speech))
+
     def test_doc_example_speech(self):
         speech = '+1,3 -7 n4 n7x7 (z?7) (z7 7) ($$ -7) z'
         self.assertEqual(parse(speech),

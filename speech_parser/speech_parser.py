@@ -207,8 +207,13 @@ def p_sheriff_in_list_position(p):
     """
     sheriff_in_list_position : OPEN_BRACE DIGIT DDOT position_list CLOSE_BRACE
     sheriff_in_list_position : OPEN_BRACE DIGIT DDOT CANCEL CLOSE_BRACE
+    sheriff_in_list_position : DIGIT DDOT OPEN_BRACE position_list CLOSE_BRACE
+    sheriff_in_list_position : DIGIT DDOT OPEN_BRACE CANCEL CLOSE_BRACE
     """
-    p[0] = (p[2], p[4].lower() if isinstance(p[4], str) else p[4])
+    if p[1] == '(':
+        p[0] = (p[2], p[4].lower() if isinstance(p[4], str) else p[4])
+    else:
+        p[0] = (p[1], p[4].lower() if isinstance(p[4], str) else p[4])
 
 def p_error(p):
     from StringIO import StringIO
