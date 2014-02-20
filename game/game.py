@@ -197,6 +197,7 @@ class GameLap(object):
     @staticmethod
     def from_dict(d):
         """Constructs GameLap from dict"""
+        logging.info("Parsing day: {0}".format(d))
         lap = GameLap()
         lap._speechs = GameLap._parse_speechs(d.get('day', []))
         lap._votings = Voting.from_list(d.get('voting', []))
@@ -253,14 +254,13 @@ class MafGame(object):
     def locality(self):
         return self._locality
 
+    @property
+    def end(self):
+        return self._end
+
     @staticmethod
     def from_yaml(game):
         """:returns: MafGame object created from parsed yaml game dict."""
-        logging.debug("Parsing: {0}".format(game))
-        logging.debug("Keys: {0}".format(game.keys()))
-        for k, v in game.items():
-            logging.debug("Key-val: {0} -> {1}".format(repr(k), repr(v)))
-
         mg = MafGame()
         mg._locality = game.get('locality', None)
         logging.info("Game locality: {0}".format(mg.locality))
@@ -272,9 +272,11 @@ class MafGame(object):
         logging.info("Game players: {0}".format(CU.strlist(mg.players)))
         mg._roles = game.get('roles', {})
         logging.info("Game roles: {0}".format(mg.roles))
+        mg._end = game.get('laps', [{'end': None}])[-1]['end'].lower()
+        logging.info("Game wins: {0}".format(mg.end))
 
-        mg._laps = [GameLap.from_dict(lap) for lap in game['laps'][-1]]
-        mg._end = game.get('laps', [{'end': None}])[-1]['end']
+        logging.info("Start parsing laps...")
+        mg._laps = [GameLap.from_dict(lap) for lap in game['laps'][:-1]]
 
 
 if __name__ == '__main__':
