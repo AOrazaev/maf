@@ -2,7 +2,7 @@
 # -*- coding: utf-8 -*-
 """Parse given yaml files with game logs."""
 
-import game
+import maf
 
 import sys
 import yaml
@@ -14,7 +14,7 @@ def game_from_yaml(f):
     num = 1
     for g in data:
         logging.info("Start loading game {0}...".format(num))
-        yield game.MafGame.from_yaml(g['game'])
+        yield maf.MafGame.from_yaml(g['game'])
         num += 1
 
 

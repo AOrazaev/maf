@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 
-from game import actions
+from maf import actions
 
 from ply import lex
 from ply import yacc

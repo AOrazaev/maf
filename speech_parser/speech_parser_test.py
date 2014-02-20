@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 
 import unittest
-import game.actions as actions
+import maf.actions as actions
 from speech_parser import parse
 
 class SpeechParserTest(unittest.TestCase):

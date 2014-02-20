@@ -7,7 +7,7 @@ test::
 	$(SET_PYTHONPATH) python util/strings.py
 	$(SET_PYTHONPATH) python speech_parser/speech_parser_test.py
 	$(SET_PYTHONPATH) python votes_parser/votes_parser.py
-	$(SET_PYTHONPATH) python game/game.py
+	$(SET_PYTHONPATH) python maf/game.py
 
 clean::
 	echo "Cleaning project"

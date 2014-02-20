@@ -266,15 +266,15 @@ class MafGame(object):
         """:returns: MafGame object created from parsed yaml game dict."""
         mg = MafGame()
         mg._locality = game.get('locality', None)
-        logging.info("Game locality: {0}".format(mg.locality))
+        logging.debug("Game locality: {0}".format(mg.locality))
         mg._date = game.get('date')
         logging.info("Game date: {0}".format(mg.date))
         mg._club = game.get('club')
         logging.info("Game club: {0}".format(mg.club))
         mg._players = game.get('players', [])
-        logging.info("Game players: {0}".format(CU.strlist(mg.players)))
+        logging.debug("Game players: {0}".format(CU.strlist(mg.players)))
         mg._roles = game.get('roles', {})
-        logging.info("Game roles: {0}".format(mg.roles))
+        logging.debug("Game roles: {0}".format(mg.roles))
         mg._end = game.get('laps', [{'end': None}])[-1]['end'].lower()
         logging.info("Game wins: {0}".format(mg.end))
 
