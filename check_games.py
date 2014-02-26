@@ -34,4 +34,13 @@ if __name__ == '__main__':
     with open(sys.argv[1], 'rb') as f:
         games = list(game_from_yaml(f))
 
-    print games
+    interp = maf.interp.GameInterpretor(games[0])
+    print interp.now
+    print interp.state
+    for state in interp.step():
+        raw_input("Next step... ")
+        print interp.now
+        print interp.state
+        dist = maf.metric.calc_distance(interp.state)
+        print maf.utils.str_pmatrix(dist)
+        print maf.metric.max_distance(dist)[:6]
