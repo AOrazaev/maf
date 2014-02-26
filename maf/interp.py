@@ -105,10 +105,8 @@ class GameState(object):
 
 
 class GameInterpretor(object):
-    def __init__(self, game, callback=SpeechCallback()):
+    def __init__(self, callback=SpeechCallback()):
         self._state = GameState()
-        self._game = game
-        self._now = {'lap': 0, 'player': 0} # (now lap, now speech)
         self._callback = callback
 
     @property
@@ -123,16 +121,24 @@ class GameInterpretor(object):
     def now(self):
         return self._now
 
-    def step(self):
-        """Move to the next game step. Change and return state."""
-        for lap in self.game.laps:
-            self.now['lap'] += 1
-            self.now['speech'] = 0
-            for p, speech in lap.speechs:
-                self.now['speech'] += 1
-                for action, data in speech.actions:
-                    self._callback(action, p, data, self.state)
-                    yield self.state
+    def interp(self, player, action):
+        action, data = action
+        self._callback(action, player, data, self.state)
+
+
+def interp_game(game):
+    interpretor = GameInterpretor()
+    now = {'lap': 0, 'speech': 0} # (now lap, now speech)
+    yield (now, interpretor.state)
+    for lap in game.laps:
+        now['lap'] += 1
+        now['speech'] = 0
+        for p, speech in lap.speechs:
+            now['speech'] += 1
+            for action in speech.actions:
+                interpretor.interp(p, action)
+                yield (now, interpretor.state)
+
 
 if __name__ == '__main__':
     logging.basicConfig(level=logging.DEBUG)
