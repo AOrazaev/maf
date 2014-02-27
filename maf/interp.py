@@ -17,7 +17,9 @@ class SpeechCallback(object):
         self.factory = {
             maf.actions.PLAY: self._play,
             maf.actions.NOT_PLAY: self._not_play,
-            maf.actions.SET: self._set
+            maf.actions.SET: self._set,
+            maf.actions.NOMINATE: self._nominate,
+            maf.actions.DENOMINATE: self._denominate
             }
         self._coeff = coeff
 
@@ -51,6 +53,19 @@ class SpeechCallback(object):
             cur = 1 - state.position[player_num - 1][p - 1]
             state.position[player_num - 1][p - 1] = 1 - self._update_position(cur)
         return state
+
+
+    def _nominate(self, player_num, who, state):
+        logging.debug("{0} nominates player No: {1}".format(player_num, who))
+        if who not in state.nominated and not state.nominated \
+           or state._nominated[-1][0] != player_num:
+            state._nominated.append((player_num, who))
+
+
+    def _denominate(self, player_num, who, state):
+        logging.debug("{0} denominates player No: {1}".format(player_num, who))
+        if state._nominated and state._nominated[-1] == (player_num, who):
+            self._nominated.pop()
 
     def _set(self, player_num, data, state):
         if data[1] > 0:
@@ -87,6 +102,7 @@ class GameState(object):
         self._positions = [[0.5 if i != j else 1. for i in range(10)] \
                            for j in range(10)]
         self._alive = set(i + 1 for i in range(10))
+        self._nominated = []
 
     @property
     def position(self):
@@ -95,6 +111,10 @@ class GameState(object):
     @property
     def alive(self):
         return self._alive
+
+    @property
+    def nominated(self):
+        return [n[1] for n in self._nominated]
 
     def kill(self, num):
         self._alive.remove(num)
@@ -117,13 +137,17 @@ class GameInterpretor(object):
     def state(self):
         return self._state
 
-    @property
-    def now(self):
-        return self._now
-
     def interp(self, player, action):
         action, data = action
         self._callback(action, player, data, self.state)
+
+    def interp_speech(self, player, speech):
+        ps = maf.PlayerSpeech.from_str(speech)
+        for action, data in ps.actions:
+            self._callback(action, player, data, self.state)
+
+    def kill(self, player):
+        self.state.kill(player)
 
 
 def interp_game(game):
