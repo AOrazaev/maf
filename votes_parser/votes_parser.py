@@ -8,6 +8,8 @@ Example of parsing:
     []
     >>> parse(None)
     []
+    >>> parse("1,2 4;  ")
+    [1, 2, 4]
 """
 
 import re
@@ -18,6 +20,10 @@ def parse(votestr):
 
     if not isinstance(votestr, str):
         return []
+
+    votestr = votestr.strip()
+    if votestr[-1] == ';':
+        votestr = votestr[:-1]
 
     votes = (v.split(',') for v in (v for v in votestr.split()))
 
