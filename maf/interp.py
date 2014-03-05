@@ -117,6 +117,10 @@ class GameState(object):
     def nominated(self):
         return [n[1] for n in self._nominated]
 
+    @nominated.setter
+    def nominated(self, value):
+        self._nominated = value
+
     def kill(self, num):
         self._alive.remove(num)
 
