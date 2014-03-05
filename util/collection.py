@@ -35,6 +35,10 @@ Utils:
     Feel difference:
     >>> print ['Строки']
     ['\xd0\xa1\xd1\x82\xd1\x80\xd0\xbe\xd0\xba\xd0\xb8']
+
+`join` -- join list of iterable to list.
+    >>> join([[1, 2], "Sasha", xrange(4)])
+    [1, 2, 'S', 'a', 's', 'h', 'a', 0, 1, 2, 3]
 """
 
 
@@ -77,6 +81,19 @@ def strlist(li):
             result += ', '
     result += ']'
     return result.encode('utf-8')
+
+
+def join(li):
+    """:returns: list of objs joined from list of iterable with objs.
+
+    >>> join([[1,2], [3], [4,5]])
+    [1, 2, 3, 4, 5]
+    """
+    result = []
+    for iterable in li:
+        for obj in iterable:
+            result.append(obj)
+    return result
 
 
 if __name__ == '__main__':
