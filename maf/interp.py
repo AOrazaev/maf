@@ -34,6 +34,7 @@ class SpeechCallback(object):
 
     def _play(self, player_num, players, state):
         logging.debug("{1} plays with: {0}".format(players, player_num))
+        logging.debug("type {0}".format(type(players)))
         if isinstance(players, int):
             players = [players]
         for p in players:
@@ -144,7 +145,9 @@ class GameInterpretor(object):
     def interp_speech(self, player, speech):
         ps = maf.PlayerSpeech.from_str(speech)
         for action, data in ps.actions:
+            logging.debug("Next action: ({0}, {1})".format(action, data))
             self._callback(action, player, data, self.state)
+            logging.debug("End parsing")
 
     def kill(self, player):
         self.state.kill(player)
